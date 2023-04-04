@@ -1,0 +1,39 @@
+service: denis-savchyshkin-my-store-app
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  profile: epam
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-prune-plugin
+
+functions:
+  getProductsList:
+    events:
+      - httpApi:
+          path: /products
+          method: GET
+    handler: src/handlers/getProductsList.handler
+    memorySize: 128
+
+  getProductsById:
+    events:
+      - httpApi:
+          path: /products/{productId}
+          method: GET
+    handler: src/handlers/getProductsById.handler
+    memorySize: 128
+
+custom:
+  esbuild:
+    minify: false
+  prune:
+    automatic: true
+    number: 3
